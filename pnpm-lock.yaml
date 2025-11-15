@@ -11,6 +11,9 @@ importers:
       '@aws-sdk/client-cloudwatch-logs':
         specifier: ^3.932.0
         version: 3.932.0
+      '@inquirer/password':
+        specifier: ^4.0.23
+        version: 4.0.23(@types/node@24.10.1)
       '@inquirer/prompts':
         specifier: ^7.10.1
         version: 7.10.1(@types/node@24.10.1)
@@ -23,10 +26,16 @@ importers:
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
+      ini:
+        specifier: ^6.0.0
+        version: 6.0.0
       minimist:
         specifier: ^1.2.8
         version: 1.2.8
     devDependencies:
+      '@types/ini':
+        specifier: ^4.1.1
+        version: 4.1.1
       '@types/minimist':
         specifier: ^1.2.5
         version: 1.2.5
@@ -511,6 +520,9 @@ packages:
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
+  '@types/ini@4.1.1':
+    resolution: {integrity: sha512-MIyNUZipBTbyUNnhvuXJTY7B6qNI78meck9Jbv3wk0OgNwRyOOVEKDutAkOs1snB/tx0FafyR6/SN4Ps0hZPeg==}
+
   '@types/minimist@1.2.5':
     resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
 
@@ -609,6 +621,10 @@ packages:
   iconv-lite@0.7.0:
     resolution: {integrity: sha512-cf6L2Ds3h57VVmkZe+Pn+5APsT7FpqJtEhhieDCvrE2MK5Qk9MyffgQyuxQTm6BChfeZNtcOLHp9IcWRVcIcBQ==}
     engines: {node: '>=0.10.0'}
+
+  ini@6.0.0:
+    resolution: {integrity: sha512-IBTdIkzZNOpqm7q3dRqJvMaldXjDHWkEDfrwGEQTs5eaQMWV+djAhR+wahyNNMAa+qpbDUhBMVt4ZKNwpPm7xQ==}
+    engines: {node: ^20.17.0 || >=22.9.0}
 
   is-fullwidth-code-point@3.0.0:
     resolution: {integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==}
@@ -1516,6 +1532,8 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
+  '@types/ini@4.1.1': {}
+
   '@types/minimist@1.2.5': {}
 
   '@types/node@24.10.1':
@@ -1592,6 +1610,8 @@ snapshots:
   iconv-lite@0.7.0:
     dependencies:
       safer-buffer: 2.1.2
+
+  ini@6.0.0: {}
 
   is-fullwidth-code-point@3.0.0: {}
 
