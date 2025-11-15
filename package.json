@@ -1,0 +1,28 @@
+{
+	"name": "AWSLogs",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "ts-node src/index.ts",
+		"build": "tsc -p tsconfig.json",
+		"start": "node dist/index.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.13.1",
+	"dependencies": {
+		"@aws-sdk/client-cloudwatch-logs": "^3.932.0",
+		"boxen": "^8.0.1",
+		"chalk": "^5.6.2",
+		"dotenv": "^17.2.3",
+		"minimist": "^1.2.8"
+	},
+	"devDependencies": {
+		"@types/minimist": "^1.2.5",
+		"@types/node": "^24.10.1",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.9.3"
+	}
+}
