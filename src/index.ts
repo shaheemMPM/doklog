@@ -21,6 +21,12 @@ const main = async () => {
 };
 
 main().catch((err) => {
+	// Handle Ctrl+C gracefully (Inquirer throws ExitPromptError)
+	if (err.name === 'ExitPromptError' || err.message?.includes('force closed')) {
+		console.log('\n\nGoodbye! 👋');
+		process.exit(0);
+	}
+
 	console.error('Error:', err);
 	process.exit(2);
 });
