@@ -35,6 +35,8 @@ else
   # Fallback to sed
   sed -i.bak "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" package.json && rm package.json.bak
 fi
+# Format package.json with Biome to ensure consistent formatting
+pnpm biome format --write package.json > /dev/null 2>&1
 echo -e "${GREEN}✓ Version updated${NC}\n"
 
 # Step 2: Run tests
