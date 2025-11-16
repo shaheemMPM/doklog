@@ -25,7 +25,7 @@ detect_platform() {
         Darwin*)    os="macos";;
         MINGW*|MSYS*|CYGWIN*) os="win";;
         *)
-            echo -e "${RED}Unsupported operating system: $(uname -s)${NC}"
+            echo -e "${RED}Unsupported operating system: $(uname -s)${NC}" >&2
             exit 1
             ;;
     esac
@@ -35,45 +35,56 @@ detect_platform() {
         x86_64|amd64)   arch="x64";;
         arm64|aarch64)  arch="arm64";;
         *)
-            echo -e "${RED}Unsupported architecture: $(uname -m)${NC}"
-            echo -e "${YELLOW}Currently only x64 and arm64 are supported${NC}"
+            echo -e "${RED}Unsupported architecture: $(uname -m)${NC}" >&2
+            echo -e "${YELLOW}Currently only x64 and arm64 are supported${NC}" >&2
             exit 1
             ;;
     esac
 
-    # Only x64 is available for now
-    if [ "$arch" != "x64" ]; then
-        echo -e "${RED}Only x64 architecture is currently supported${NC}"
-        exit 1
-    fi
-
-    echo "${os}"
+    # Return platform-arch combination
+    echo "${os}-${arch}"
 }
 
 download_binary() {
-    local platform=$1
-    local binary_name="${BINARY_NAME}-${platform}"
+    local platform_arch=$1
+    local binary_name="${BINARY_NAME}-${platform_arch}"
 
-    if [ "$platform" = "win" ]; then
+    # Extract just the OS part for Windows check
+    local os_part="${platform_arch%%-*}"
+
+    if [ "$os_part" = "win" ]; then
         binary_name="${binary_name}.exe"
     fi
 
     local download_url="https://github.com/${REPO}/releases/latest/download/${binary_name}"
     local temp_file="/tmp/${binary_name}"
 
-    echo -e "${YELLOW}Downloading doklog for ${platform}...${NC}"
+    echo -e "${YELLOW}Downloading doklog for ${platform_arch}...${NC}"
+    echo -e "${YELLOW}Download URL: ${download_url}${NC}"
 
     if command -v curl >/dev/null 2>&1; then
-        curl -fsSL "$download_url" -o "$temp_file"
+        if ! curl -fsSL "$download_url" -o "$temp_file"; then
+            echo -e "${RED}Error: Failed to download from ${download_url}${NC}"
+            echo -e "${YELLOW}Please check:${NC}"
+            echo -e "  1. The release exists at https://github.com/${REPO}/releases"
+            echo -e "  2. The binary file ${binary_name} is uploaded to the latest release"
+            exit 1
+        fi
     elif command -v wget >/dev/null 2>&1; then
-        wget -q "$download_url" -O "$temp_file"
+        if ! wget -q "$download_url" -O "$temp_file"; then
+            echo -e "${RED}Error: Failed to download from ${download_url}${NC}"
+            echo -e "${YELLOW}Please check:${NC}"
+            echo -e "  1. The release exists at https://github.com/${REPO}/releases"
+            echo -e "  2. The binary file ${binary_name} is uploaded to the latest release"
+            exit 1
+        fi
     else
         echo -e "${RED}Error: Neither curl nor wget is available${NC}"
         exit 1
     fi
 
-    if [ ! -f "$temp_file" ]; then
-        echo -e "${RED}Download failed${NC}"
+    if [ ! -f "$temp_file" ] || [ ! -s "$temp_file" ]; then
+        echo -e "${RED}Download failed or file is empty${NC}"
         exit 1
     fi
 
@@ -82,9 +93,12 @@ download_binary() {
 
 install_binary() {
     local temp_file=$1
-    local platform=$2
+    local platform_arch=$2
 
-    if [ "$platform" = "win" ]; then
+    # Extract just the OS part
+    local os_part="${platform_arch%%-*}"
+
+    if [ "$os_part" = "win" ]; then
         echo -e "${YELLOW}For Windows, please manually copy the binary to a directory in your PATH${NC}"
         echo -e "${GREEN}Binary downloaded to: ${temp_file}${NC}"
         exit 0
@@ -105,8 +119,14 @@ install_binary() {
 }
 
 verify_installation() {
+    local was_installed=$1
+
     if command -v $BINARY_NAME >/dev/null 2>&1; then
-        echo -e "${GREEN}✓ Installation verified${NC}"
+        if [ "$was_installed" = "true" ]; then
+            echo -e "${GREEN}✓ Successfully updated to the latest version${NC}"
+        else
+            echo -e "${GREEN}✓ Installation verified${NC}"
+        fi
         echo -e "\nRun '${BINARY_NAME}' to get started!"
     else
         echo -e "${RED}Installation completed but binary not found in PATH${NC}"
@@ -124,18 +144,27 @@ main() {
     echo "╚═══════════════════════════════════════════╝"
     echo ""
 
+    # Check if already installed
+    local was_installed="false"
+    if command -v $BINARY_NAME >/dev/null 2>&1; then
+        was_installed="true"
+        local current_location=$(which $BINARY_NAME)
+        echo -e "${YELLOW}ℹ doklog is already installed at: ${current_location}${NC}"
+        echo -e "${YELLOW}This will update it to the latest version.${NC}\n"
+    fi
+
     # Detect platform
-    platform=$(detect_platform)
-    echo -e "${GREEN}Detected platform: ${platform}-x64${NC}\n"
+    platform_arch=$(detect_platform)
+    echo -e "${GREEN}Detected platform: ${platform_arch}${NC}\n"
 
     # Download binary
-    temp_file=$(download_binary "$platform")
+    temp_file=$(download_binary "$platform_arch")
 
     # Install binary
-    install_binary "$temp_file" "$platform"
+    install_binary "$temp_file" "$platform_arch"
 
     # Verify installation
-    verify_installation
+    verify_installation "$was_installed"
 }
 
 main

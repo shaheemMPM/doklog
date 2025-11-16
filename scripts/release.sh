@@ -133,9 +133,11 @@ else
   echo -e "3. Upload these binaries:"
 fi
 
-echo -e "   - bin/doklog-macos"
-echo -e "   - bin/doklog-linux"
-echo -e "   - bin/doklog-win.exe"
+echo -e "   - bin/doklog-macos-x64 (Intel)"
+echo -e "   - bin/doklog-macos-arm64 (Apple Silicon)"
+echo -e "   - bin/doklog-linux-x64"
+echo -e "   - bin/doklog-linux-arm64"
+echo -e "   - bin/doklog-win-x64.exe"
 
 if git ls-remote --tags origin | grep -q "refs/tags/${TAG}"; then
   echo -e "5. Save the release\n"
