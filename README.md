@@ -1,10 +1,20 @@
-# CloudWatch Lens
+# doklog
 
-AWS logs, simplified.
+AWS logs, simplified - Part of the **Dokops** toolkit.
+
+## Quick Install
+
+Install with a single command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/shaheemMPM/doklog/main/install.sh | bash
+```
+
+Or download manually from the [releases page](https://github.com/shaheemMPM/doklog/releases).
 
 ## AWS Credentials
 
-CloudWatch Lens automatically detects your AWS credentials from multiple sources in the following priority order:
+doklog automatically detects your AWS credentials from multiple sources in the following priority order:
 
 ### 1. Environment Variables (Highest Priority)
 Credentials already exported in your shell session:
@@ -47,28 +57,42 @@ pnpm start
 pnpm package
 ```
 
-## Building Standalone Binaries
+## Features
 
-CloudWatch Lens can be compiled into standalone executables that don't require Node.js to be installed:
+- 🔐 **Multiple credential sources** - Environment variables, .env file, or ~/.aws/credentials
+- 🌍 **Multi-region support** - Select any AWS region
+- ⚡ **Lambda function logs** - View logs from your Lambda functions with color-coded output
+- 🔍 **Searchable lists** - Quick filtering for functions and log streams
+- 🎨 **Smart log highlighting** - Errors in red, warnings in yellow, lifecycle events in green
+- ⏱️ **Human-readable timestamps** - Shows "5m ago" or "16th Jan 2025, 10:30 AM EST"
+
+## Building from Source
+
+### Development
 
 ```bash
+# Install dependencies
+pnpm install
+
+# Run in development mode
+pnpm dev
+```
+
+### Building Standalone Binaries
+
+doklog can be compiled into standalone executables that don't require Node.js:
+
+```bash
+# Build all platforms
 pnpm package
+
+# Or build for specific platform
+pnpm package:macos
+pnpm package:linux
+pnpm package:win
 ```
 
-This creates three platform-specific binaries in the `bin/` directory:
-- `cloudwatch-lens-macos` - macOS (x64)
-- `cloudwatch-lens-linux` - Linux (x64)
-- `cloudwatch-lens-win.exe` - Windows (x64)
-
-These binaries include everything needed to run the tool and can be distributed to users without Node.js installed.
-
-### Using the Binary
-
-After building, you can run the binary directly:
-```bash
-# macOS/Linux
-./bin/cloudwatch-lens-macos
-
-# Windows
-bin\cloudwatch-lens-win.exe
-```
+This creates platform-specific binaries in the `bin/` directory:
+- `doklog-macos` - macOS (x64)
+- `doklog-linux` - Linux (x64)
+- `doklog-win.exe` - Windows (x64)
