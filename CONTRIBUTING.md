@@ -27,6 +27,8 @@ By participating in this project, you agree to maintain a respectful and inclusi
    pnpm install
    ```
 
+   This will also set up Git hooks via Husky automatically.
+
 3. **Run in development mode**
    ```bash
    pnpm dev
@@ -36,6 +38,19 @@ By participating in this project, you agree to maintain a respectful and inclusi
    ```bash
    pnpm build
    ```
+
+### Git Hooks
+
+The project uses Husky to automatically run quality checks before pushing:
+
+- **pre-push hook**: Runs tests, linting, and build before every push
+- Automatically installed when you run `pnpm install`
+- Ensures all code pushed to GitHub passes quality checks
+
+If you need to bypass hooks (not recommended):
+```bash
+git push --no-verify
+```
 
 ## Development Workflow
 
@@ -281,9 +296,14 @@ When requesting features, please describe:
 
 ## Releasing
 
-For maintainers: See [RELEASE.md](RELEASE.md) for instructions on creating new releases.
+For maintainers: See [RELEASE.md](RELEASE.md) for detailed instructions on creating new releases.
 
-The release process is automated via GitHub Actions - simply push a version tag and binaries will be built and released automatically.
+**Quick release command:**
+```bash
+pnpm release 1.0.0
+```
+
+This automated script handles version updates, testing, building binaries, and pushing to GitHub. See [RELEASE.md](RELEASE.md) for full details.
 
 ## Questions?
 
