@@ -29,6 +29,7 @@
 	"packageManager": "pnpm@10.13.1",
 	"dependencies": {
 		"@aws-sdk/client-cloudwatch-logs": "^3.932.0",
+		"@aws-sdk/client-lambda": "^3.932.0",
 		"@inquirer/password": "^4.0.23",
 		"@inquirer/prompts": "^7.10.1",
 		"boxen": "5.1.2",
