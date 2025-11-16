@@ -1,6 +1,6 @@
 {
 	"name": "doklog",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "AWS logs, simplified - Part of the Dokops toolkit",
 	"main": "index.js",
 	"scripts": {
