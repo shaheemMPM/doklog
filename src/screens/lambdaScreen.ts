@@ -48,7 +48,22 @@ export const showLambdaScreen = async (region: string) => {
 
 		console.log(chalk.cyan(`\nSelected log stream: ${selectedStream}`));
 		// TODO: Show logs from the selected stream
-	} catch (error) {
+	} catch (error: unknown) {
+		// Re-throw ExitPromptError to be handled by main
+		if (
+			error &&
+			typeof error === 'object' &&
+			('name' in error || 'message' in error)
+		) {
+			const err = error as { name?: string; message?: string };
+			if (
+				err.name === 'ExitPromptError' ||
+				err.message?.includes('force closed')
+			) {
+				throw error;
+			}
+		}
+
 		console.error(chalk.red('\nError:'), error);
 		throw error;
 	}
