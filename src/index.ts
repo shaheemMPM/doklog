@@ -1,4 +1,7 @@
 import { selectRegion } from './prompts/regionSelector';
+import { selectService } from './prompts/serviceSelector';
+import { showLambdaScreen } from './screens/lambdaScreen';
+import { showSqsScreen } from './screens/sqsScreen';
 import { displayBanner } from './utils/banner';
 import {
 	ensureAwsCredentials,
@@ -16,8 +19,19 @@ const main = async () => {
 
 	const region = await selectRegion();
 
-	console.log('\nYou have reached the second screen');
-	console.log(`Selected region: ${region}`);
+	console.log(''); // Add spacing
+
+	const service = await selectService();
+
+	// Route to appropriate service screen
+	switch (service) {
+		case 'lambda':
+			await showLambdaScreen(region);
+			break;
+		case 'sqs':
+			await showSqsScreen(region);
+			break;
+	}
 };
 
 main().catch((err) => {
