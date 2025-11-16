@@ -1,5 +1,5 @@
-import { displayBanner } from './utils/banner';
 import { selectRegion } from './prompts/regionSelector';
+import { displayBanner } from './utils/banner';
 import {
 	ensureAwsCredentials,
 	setAwsEnvCredentials,

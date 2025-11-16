@@ -1,15 +1,24 @@
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
-import ini from 'ini';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { input, password } from '@inquirer/prompts';
 import chalk from 'chalk';
+import ini from 'ini';
 import { loadEnvFromCwd } from './env';
 
 export type AWSCredentials = {
 	accessKeyId: string;
 	secretAccessKey: string;
 };
+
+type IniContent = Record<
+	string,
+	{
+		aws_access_key_id?: string;
+		aws_secret_access_key?: string;
+		[key: string]: string | undefined;
+	}
+>;
 
 const getEnvCredentials = (): AWSCredentials | null => {
 	// First check if already in process.env (from shell or already loaded)
@@ -70,7 +79,7 @@ const saveAwsCredentials = (credentials: AWSCredentials): void => {
 		fs.mkdirSync(awsDir, { mode: 0o700 });
 	}
 
-	let existingContent: any = {};
+	let existingContent: IniContent = {};
 	if (fs.existsSync(credentialsPath)) {
 		const content = fs.readFileSync(credentialsPath, 'utf-8');
 		existingContent = ini.parse(content);
@@ -91,10 +100,10 @@ const saveAwsCredentials = (credentials: AWSCredentials): void => {
 
 const promptForCredentials = async (): Promise<AWSCredentials> => {
 	console.log(
-		chalk.yellow('\nAWS credentials not found. Please enter your credentials:')
+		chalk.yellow('\nAWS credentials not found. Please enter your credentials:'),
 	);
 	console.log(
-		chalk.gray('(These will be securely stored in ~/.aws/credentials)\n')
+		chalk.gray('(These will be securely stored in ~/.aws/credentials)\n'),
 	);
 
 	const accessKeyId = await input({
@@ -129,7 +138,9 @@ export const ensureAwsCredentials = async (): Promise<AWSCredentials> => {
 	let credentials = getEnvCredentials();
 	if (credentials) {
 		console.log(
-			chalk.green('✓ Using credentials from environment variables or .env file')
+			chalk.green(
+				'✓ Using credentials from environment variables or .env file',
+			),
 		);
 		return credentials;
 	}

@@ -16,7 +16,7 @@ export const selectRegion = async (): Promise<string> => {
 			return AWS_REGIONS.filter(
 				(r) =>
 					r.code.toLowerCase().includes(searchTerm) ||
-					r.name.toLowerCase().includes(searchTerm)
+					r.name.toLowerCase().includes(searchTerm),
 			).map((r) => ({
 				name: `${r.code} - ${r.name}`,
 				value: r.code,
