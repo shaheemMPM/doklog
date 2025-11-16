@@ -24,6 +24,15 @@ fi
 VERSION=$1
 TAG="v${VERSION}"
 
+# Check current version in package.json
+CURRENT_VERSION=$(grep -o '"version": "[^"]*"' package.json | cut -d'"' -f4)
+
+if [ "$CURRENT_VERSION" = "$VERSION" ]; then
+  echo -e "${YELLOW}⚠ Warning: package.json is already at version ${VERSION}${NC}"
+  echo -e "${YELLOW}This will create a release without a version bump commit.${NC}"
+  echo -e "${YELLOW}Consider using a newer version number.${NC}\n"
+fi
+
 echo -e "${BLUE}Starting release process for version ${TAG}${NC}\n"
 
 # Step 1: Update package.json version
@@ -62,18 +71,46 @@ echo -e "${GREEN}✓ Binaries built${NC}\n"
 # Step 6: Git commit
 echo -e "${YELLOW}[6/8]${NC} Committing version changes..."
 git add package.json
-git commit -m "chore: bump version to ${VERSION}"
-echo -e "${GREEN}✓ Changes committed${NC}\n"
+if git diff --staged --quiet; then
+  echo -e "${YELLOW}⚠ No version changes detected (already at ${VERSION})${NC}\n"
+else
+  git commit -m "Bumps version to ${VERSION}"
+  echo -e "${GREEN}✓ Changes committed${NC}\n"
+fi
 
 # Step 7: Create Git tag
 echo -e "${YELLOW}[7/8]${NC} Creating git tag ${TAG}..."
-git tag -a "${TAG}" -m "Release ${TAG}"
-echo -e "${GREEN}✓ Tag created${NC}\n"
+if git rev-parse "${TAG}" >/dev/null 2>&1; then
+  echo -e "${YELLOW}⚠ Tag ${TAG} already exists locally${NC}"
+
+  # Check if tag exists on remote
+  if git ls-remote --tags origin | grep -q "refs/tags/${TAG}"; then
+    echo -e "${YELLOW}⚠ Tag ${TAG} also exists on GitHub${NC}"
+    echo -e "${YELLOW}Will update existing tag and force push${NC}\n"
+    # Delete local tag and recreate it at current commit
+    git tag -d "${TAG}" >/dev/null 2>&1
+    git tag -a "${TAG}" -m "Release ${TAG}"
+  else
+    echo -e "${YELLOW}Recreating tag locally${NC}\n"
+    git tag -d "${TAG}" >/dev/null 2>&1
+    git tag -a "${TAG}" -m "Release ${TAG}"
+  fi
+else
+  git tag -a "${TAG}" -m "Release ${TAG}"
+  echo -e "${GREEN}✓ Tag created${NC}\n"
+fi
 
 # Step 8: Push to GitHub
 echo -e "${YELLOW}[8/8]${NC} Pushing to GitHub..."
 git push origin main
-git push origin "${TAG}"
+
+# Check if we need to force push the tag
+if git ls-remote --tags origin | grep -q "refs/tags/${TAG}"; then
+  echo -e "${YELLOW}Force pushing tag ${TAG} to update on GitHub...${NC}"
+  git push origin "${TAG}" --force
+else
+  git push origin "${TAG}"
+fi
 echo -e "${GREEN}✓ Pushed to GitHub${NC}\n"
 
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -81,11 +118,27 @@ echo -e "${GREEN}✓ Release ${TAG} completed successfully!${NC}"
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
 
 echo -e "${BLUE}Next steps:${NC}"
-echo -e "1. Create a GitHub release manually at:"
-echo -e "   ${BLUE}https://github.com/shaheemMPM/doklog/releases/new${NC}"
-echo -e "2. Select tag: ${TAG}"
-echo -e "3. Upload these binaries:"
+
+# Check if release already exists on GitHub
+if git ls-remote --tags origin | grep -q "refs/tags/${TAG}"; then
+  echo -e "1. ${YELLOW}Update the existing GitHub release:${NC}"
+  echo -e "   ${BLUE}https://github.com/shaheemMPM/doklog/releases/tag/${TAG}${NC}"
+  echo -e "2. Click 'Edit release'"
+  echo -e "3. Delete old binaries (if any)"
+  echo -e "4. Upload these new binaries:"
+else
+  echo -e "1. Create a GitHub release manually at:"
+  echo -e "   ${BLUE}https://github.com/shaheemMPM/doklog/releases/new${NC}"
+  echo -e "2. Select tag: ${TAG}"
+  echo -e "3. Upload these binaries:"
+fi
+
 echo -e "   - bin/doklog-macos"
 echo -e "   - bin/doklog-linux"
 echo -e "   - bin/doklog-win.exe"
-echo -e "4. Publish the release\n"
+
+if git ls-remote --tags origin | grep -q "refs/tags/${TAG}"; then
+  echo -e "5. Save the release\n"
+else
+  echo -e "4. Publish the release\n"
+fi
