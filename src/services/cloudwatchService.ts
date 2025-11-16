@@ -1,6 +1,7 @@
 import {
 	CloudWatchLogsClient,
 	DescribeLogStreamsCommand,
+	GetLogEventsCommand,
 } from '@aws-sdk/client-cloudwatch-logs';
 
 export type LogStream = {
@@ -9,6 +10,11 @@ export type LogStream = {
 	firstEventTime: number;
 	lastIngestionTime: number;
 	storedBytes?: number;
+};
+
+export type LogEvent = {
+	timestamp: number;
+	message: string;
 };
 
 export const listLogStreams = async (
@@ -55,4 +61,48 @@ export const listLogStreams = async (
 	} while (nextToken);
 
 	return streams;
+};
+
+export const getLogEvents = async (
+	region: string,
+	logGroupName: string,
+	logStreamName: string,
+): Promise<LogEvent[]> => {
+	const client = new CloudWatchLogsClient({ region });
+
+	const events: LogEvent[] = [];
+	let nextToken: string | undefined;
+	let hasMore = true;
+
+	while (hasMore) {
+		const command = new GetLogEventsCommand({
+			logGroupName,
+			logStreamName,
+			startFromHead: true,
+			nextToken,
+		});
+
+		const response = await client.send(command);
+
+		if (response.events) {
+			for (const event of response.events) {
+				if (event.timestamp && event.message) {
+					events.push({
+						timestamp: event.timestamp,
+						message: event.message,
+					});
+				}
+			}
+		}
+
+		// Check if there are more events
+		const newToken = response.nextForwardToken;
+		if (!newToken || newToken === nextToken) {
+			hasMore = false;
+		} else {
+			nextToken = newToken;
+		}
+	}
+
+	return events;
 };

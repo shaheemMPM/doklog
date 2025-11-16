@@ -1,8 +1,9 @@
 import chalk from 'chalk';
 import { selectLambdaFunction } from '../prompts/lambdaFunctionSelector';
 import { selectLogStream } from '../prompts/logStreamSelector';
-import { listLogStreams } from '../services/cloudwatchService';
+import { getLogEvents, listLogStreams } from '../services/cloudwatchService';
 import { listLambdaFunctions } from '../services/lambdaService';
+import { displayLog, displayLogSeparator } from '../services/logDisplayService';
 
 export const showLambdaScreen = async (region: string) => {
 	console.log(chalk.cyan('\n=== AWS Lambda ==='));
@@ -47,7 +48,24 @@ export const showLambdaScreen = async (region: string) => {
 		const selectedStream = await selectLogStream(streams);
 
 		console.log(chalk.cyan(`\nSelected log stream: ${selectedStream}`));
-		// TODO: Show logs from the selected stream
+		console.log(chalk.yellow('\nLoading logs...'));
+
+		// Fetch and display logs
+		const events = await getLogEvents(region, logGroupName, selectedStream);
+
+		if (events.length === 0) {
+			console.log(chalk.red('\nNo log events found in this stream.'));
+			return;
+		}
+
+		console.log(chalk.green(`\n✓ Found ${events.length} log event(s)\n`));
+		displayLogSeparator();
+
+		for (const event of events) {
+			displayLog(event.timestamp, event.message);
+		}
+
+		displayLogSeparator();
 	} catch (error: unknown) {
 		// Re-throw ExitPromptError to be handled by main
 		if (
