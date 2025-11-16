@@ -59,32 +59,32 @@ download_binary() {
     local download_url="https://github.com/${REPO}/releases/latest/download/${binary_name}"
     local temp_file="/tmp/${binary_name}"
 
-    echo -e "${YELLOW}Downloading doklog for ${platform_arch}...${NC}"
-    echo -e "${YELLOW}Download URL: ${download_url}${NC}"
+    echo -e "${YELLOW}Downloading doklog for ${platform_arch}...${NC}" >&2
+    echo -e "${YELLOW}Download URL: ${download_url}${NC}" >&2
 
     if command -v curl >/dev/null 2>&1; then
         if ! curl -fsSL "$download_url" -o "$temp_file"; then
-            echo -e "${RED}Error: Failed to download from ${download_url}${NC}"
-            echo -e "${YELLOW}Please check:${NC}"
-            echo -e "  1. The release exists at https://github.com/${REPO}/releases"
-            echo -e "  2. The binary file ${binary_name} is uploaded to the latest release"
+            echo -e "${RED}Error: Failed to download from ${download_url}${NC}" >&2
+            echo -e "${YELLOW}Please check:${NC}" >&2
+            echo -e "  1. The release exists at https://github.com/${REPO}/releases" >&2
+            echo -e "  2. The binary file ${binary_name} is uploaded to the latest release" >&2
             exit 1
         fi
     elif command -v wget >/dev/null 2>&1; then
         if ! wget -q "$download_url" -O "$temp_file"; then
-            echo -e "${RED}Error: Failed to download from ${download_url}${NC}"
-            echo -e "${YELLOW}Please check:${NC}"
-            echo -e "  1. The release exists at https://github.com/${REPO}/releases"
-            echo -e "  2. The binary file ${binary_name} is uploaded to the latest release"
+            echo -e "${RED}Error: Failed to download from ${download_url}${NC}" >&2
+            echo -e "${YELLOW}Please check:${NC}" >&2
+            echo -e "  1. The release exists at https://github.com/${REPO}/releases" >&2
+            echo -e "  2. The binary file ${binary_name} is uploaded to the latest release" >&2
             exit 1
         fi
     else
-        echo -e "${RED}Error: Neither curl nor wget is available${NC}"
+        echo -e "${RED}Error: Neither curl nor wget is available${NC}" >&2
         exit 1
     fi
 
     if [ ! -f "$temp_file" ] || [ ! -s "$temp_file" ]; then
-        echo -e "${RED}Download failed or file is empty${NC}"
+        echo -e "${RED}Download failed or file is empty${NC}" >&2
         exit 1
     fi
 
