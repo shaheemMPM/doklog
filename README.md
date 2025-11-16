@@ -42,4 +42,33 @@ pnpm dev
 # Production mode
 pnpm build
 pnpm start
+
+# Create standalone binaries
+pnpm package
+```
+
+## Building Standalone Binaries
+
+CloudWatch Lens can be compiled into standalone executables that don't require Node.js to be installed:
+
+```bash
+pnpm package
+```
+
+This creates three platform-specific binaries in the `bin/` directory:
+- `cloudwatch-lens-macos` - macOS (x64)
+- `cloudwatch-lens-linux` - Linux (x64)
+- `cloudwatch-lens-win.exe` - Windows (x64)
+
+These binaries include everything needed to run the tool and can be distributed to users without Node.js installed.
+
+### Using the Binary
+
+After building, you can run the binary directly:
+```bash
+# macOS/Linux
+./bin/cloudwatch-lens-macos
+
+# Windows
+bin\cloudwatch-lens-win.exe
 ```
