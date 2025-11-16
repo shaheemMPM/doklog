@@ -1,16 +1,40 @@
 # doklog
 
-AWS logs, simplified - Part of the **Dokops** toolkit.
+> AWS logs, simplified - Part of the **Dokops** toolkit
 
-## Quick Install
+A fast, interactive CLI tool for viewing AWS Lambda logs with smart highlighting and searchable interfaces.
 
-Install with a single command:
+## ✨ Features
+
+- 🔐 **Multiple credential sources** - Environment variables, .env file, or ~/.aws/credentials
+- 🌍 **Multi-region support** - Select any AWS region interactively
+- ⚡ **Lambda function logs** - Browse and view logs from your Lambda functions
+- 🔍 **Searchable lists** - Quick filtering for functions and log streams
+- 🎨 **Smart log highlighting** - Errors in red, warnings in yellow, lifecycle events in green
+- ⏱️ **Human-readable timestamps** - Shows "5m ago" or "16th Jan 2025, 10:30 AM EST"
+- 🚀 **Fast & lightweight** - Standalone binary, no Node.js required
+
+## 📦 Installation
+
+### Quick Install (Recommended)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/shaheemMPM/doklog/main/install.sh | bash
 ```
 
-Or download manually from the [releases page](https://github.com/shaheemMPM/doklog/releases).
+### Manual Download
+
+Download the latest binary for your platform from the [releases page](https://github.com/shaheemMPM/doklog/releases):
+
+- **macOS**: `doklog-macos`
+- **Linux**: `doklog-linux`
+- **Windows**: `doklog-win.exe`
+
+Make it executable and move to your PATH:
+```bash
+chmod +x doklog-macos
+sudo mv doklog-macos /usr/local/bin/doklog
+```
 
 ## AWS Credentials
 
@@ -43,56 +67,43 @@ If credentials aren't found in any of the above locations, you'll be prompted to
 
 **Note:** Secret keys are masked with asterisks (`*****`) when entered via prompt.
 
-## Usage
+## 🚀 Usage
+
+Simply run `doklog` and follow the interactive prompts:
 
 ```bash
-# Development mode
-pnpm dev
-
-# Production mode
-pnpm build
-pnpm start
-
-# Create standalone binaries
-pnpm package
+doklog
 ```
 
-## Features
+The tool will guide you through:
+1. **Region Selection** - Choose your AWS region
+2. **Service Selection** - Pick AWS Lambda (more services coming soon)
+3. **Function Selection** - Browse your Lambda functions
+4. **Log Stream Selection** - View recent invocations
+5. **Log Display** - See color-coded logs with timestamps
 
-- 🔐 **Multiple credential sources** - Environment variables, .env file, or ~/.aws/credentials
-- 🌍 **Multi-region support** - Select any AWS region
-- ⚡ **Lambda function logs** - View logs from your Lambda functions with color-coded output
-- 🔍 **Searchable lists** - Quick filtering for functions and log streams
-- 🎨 **Smart log highlighting** - Errors in red, warnings in yellow, lifecycle events in green
-- ⏱️ **Human-readable timestamps** - Shows "5m ago" or "16th Jan 2025, 10:30 AM EST"
+## 🎨 Log Highlighting
 
-## Building from Source
+doklog automatically colorizes logs for easy scanning:
 
-### Development
+- 🟢 **Green** - START/END/REPORT (Lambda lifecycle)
+- 🔴 **Red** - ERROR/EXCEPTION
+- 🟡 **Yellow** - WARN/WARNING
+- 🔵 **Cyan** - INFO
+- ⚪ **Gray** - DEBUG
 
-```bash
-# Install dependencies
-pnpm install
+## 🤝 Contributing
 
-# Run in development mode
-pnpm dev
-```
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, guidelines, and how to submit pull requests.
 
-### Building Standalone Binaries
+## 📝 License
 
-doklog can be compiled into standalone executables that don't require Node.js:
+MIT © [Shaheem MPM](https://github.com/shaheemMPM)
 
-```bash
-# Build all platforms
-pnpm package
+## 🔗 Part of Dokops
 
-# Or build for specific platform
-pnpm package:macos
-pnpm package:linux
-pnpm package:win
-```
+doklog is part of the Dokops toolkit - a collection of developer tools for DevOps workflows.
 
-This creates platform-specific binaries in the `bin/` directory:
-- `doklog-macos` - macOS (x64)
-- `doklog-linux` - Linux (x64)
-- `doklog-win.exe` - Windows (x64)
+---
+
+**Issues?** Report them on [GitHub Issues](https://github.com/shaheemMPM/doklog/issues)

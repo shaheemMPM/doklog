@@ -11,6 +11,10 @@
 		"package:macos": "pnpm build && pkg dist/index.js -t node18-macos-x64 -o bin/doklog-macos",
 		"package:linux": "pnpm build && pkg dist/index.js -t node18-linux-x64 -o bin/doklog-linux",
 		"package:win": "pnpm build && pkg dist/index.js -t node18-win-x64 -o bin/doklog-win.exe",
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest --coverage",
+		"test:run": "vitest run",
 		"check": "biome check .",
 		"format": "biome format --write .",
 		"lint": "biome lint .",
@@ -23,9 +27,34 @@
 		],
 		"outputPath": "bin"
 	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
+	"keywords": [
+		"aws",
+		"cloudwatch",
+		"lambda",
+		"logs",
+		"cli",
+		"monitoring",
+		"dokops",
+		"aws-cli",
+		"terminal",
+		"cloudwatch-logs",
+		"aws-lambda",
+		"devops",
+		"observability"
+	],
+	"author": "Mohammed Shaheem P <shaheemmpm@gmail.com> (https://github.com/shaheemMPM)",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/shaheemMPM/doklog.git"
+	},
+	"bugs": {
+		"url": "https://github.com/shaheemMPM/doklog/issues"
+	},
+	"homepage": "https://github.com/shaheemMPM/doklog#readme",
+	"engines": {
+		"node": ">=18.0.0"
+	},
 	"packageManager": "pnpm@10.13.1",
 	"dependencies": {
 		"@aws-sdk/client-cloudwatch-logs": "^3.932.0",
@@ -43,8 +72,10 @@
 		"@types/ini": "^4.1.1",
 		"@types/minimist": "^1.2.5",
 		"@types/node": "^24.10.1",
+		"@vitest/ui": "^4.0.9",
 		"@yao-pkg/pkg": "^6.10.1",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.9.3"
+		"typescript": "^5.9.3",
+		"vitest": "^4.0.9"
 	}
 }

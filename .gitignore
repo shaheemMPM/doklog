@@ -30,5 +30,10 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+
 # OS files
 Thumbs.db
