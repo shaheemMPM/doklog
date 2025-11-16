@@ -279,6 +279,12 @@ When requesting features, please describe:
 - Any alternatives you've considered
 - Additional context
 
+## Releasing
+
+For maintainers: See [RELEASE.md](RELEASE.md) for instructions on creating new releases.
+
+The release process is automated via GitHub Actions - simply push a version tag and binaries will be built and released automatically.
+
 ## Questions?
 
 - Open an issue with the `question` label
